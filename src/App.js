@@ -1,11 +1,13 @@
 import { useState } from "react";
 import ProductList from "./ProductList";
+import ProductDetail from "./ProductDetail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 
 function App() {
   const [cart, setCart] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Add product to cart
   const addToCart = (product) => {
@@ -35,7 +37,20 @@ function App() {
       <div className="container">
         {!showCheckout && (
           <>
-            <ProductList addToCart={addToCart} />
+            {!selectedProduct && (
+              <ProductList addToCart={addToCart} viewProduct={(p) => setSelectedProduct(p)} />
+            )}
+
+            {selectedProduct && (
+              <ProductDetail
+                product={selectedProduct}
+                addToCart={(p) => {
+                  addToCart(p);
+                }}
+                onBack={() => setSelectedProduct(null)}
+              />
+            )}
+
             <Cart cart={cart} removeFromCart={removeFromCart} />
 
             {cart.length > 0 && (
